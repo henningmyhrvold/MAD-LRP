@@ -1,7 +1,9 @@
 This repository is based on the code from Frederik Hvilshøj GitHub repository TorchLRP as well as the beginner tutorial from pytorch.org authored by Nathan Inkawhich for fine-tuning torchvision models. I got help from my course advisor Haoyu Zhang on finding this code. He has also debugged the code eariler and connected the code written by Hvilshøj with the code from pythorch.org so it worked for S-MAD. I have added some small changes in order to calculate True Positiv, True Negative, False Positive, False Negative. I have also added the confusion_matrix functionallity from sklearn. 
 
 Available from:
+
 https://github.com/fhvilshoj/TorchLRP
+
 https://pytorch.org/tutorials/beginner/finetuning\_torchvision\_models\_tutorial.html
 
 # Implementation of LRP for pytorch
