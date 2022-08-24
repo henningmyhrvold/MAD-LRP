@@ -13,12 +13,37 @@ import copy
 import sklearn
 import math
 from tqdm import tqdm
-
+from os import listdir
 from sklearn.metrics import confusion_matrix
+import fnmatch
+
 
 print('Scikit-learn version is {}.'.format(sklearn.__version__))
 print("PyTorch Version: ",torch.__version__)
 print("Torchvision Version: ",torchvision.__version__)
+
+
+# Counts all the .jpg and .png in a specific folder. This is done to speed up the training with using preallocated arrays with a fixed size.
+def count_images(my_path):
+	num_images = len(fnmatch.filter(os.listdir(my_path),'*.png')) + len(fnmatch.filter(os.listdir(my_path),'*.jpg'))
+	return num_images
+
+
+# Hardcoded paths to the datasets different folders.
+path_train_bonafide = r'/home/ubuntu/Desktop/TorchLRP-master/Morph_Data/train/bonafide'
+path_train_morph = r'/home/ubuntu/Desktop/TorchLRP-master/Morph_Data/train/morph'
+path_validation_bonafide = r'/home/ubuntu/Desktop/TorchLRP-master/Morph_Data/validation/bonafide'
+path_validation_morph = r'/home/ubuntu/Desktop/TorchLRP-master/Morph_Data/validation/morph'
+
+
+# Finds the number of images in the training set and validation set. 
+number_train_images = count_images(path_train_bonafide) + count_images(path_train_morph)
+number_validation_images = count_images(path_validation_bonafide) + count_images(path_validation_morph)
+
+print(number_train_images)
+print(number_validation_images)
+
+
 
 def train_model(model, dataloaders, criterion, optimizer, num_epochs=25, is_inception=False):
     since = time.time()
@@ -29,18 +54,24 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25, is_ince
     best_acc = 0.0
     
     # Add these paramters for the TP, TN, FP, FN calculations. 
-    # NOTE! If you are going to use batch_size > 1, comment out all TP, TN, FP, FN code    
+    # NOTE! If you are going to use batch_size > 1, comment out all TP, TN, FP, FN code
+    
     y_true = []
     y_prediction = []
     
     for epoch in range(num_epochs):
+        print()
+        print('#' * 40)
+        print('#' * 40)
+        print()
         print('Epoch {}/{}'.format(epoch, num_epochs - 1))
-        print('-' * 10)
+        print('-' * 20)
 
         # Each epoch has a training and validation phase
         for phase in ['train', 'validation']:
             if phase == 'train':
                 model.train()  # Set model to training mode
+		
             else:
                 model.eval()   # Set model to evaluate mode
 
@@ -82,21 +113,25 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25, is_ince
                 # statistics
                 running_loss += loss.item() * inputs.size(0)
                 
+                # These paramters are added for the TP, TN, FP, FN calculations. 
                 
-                # Add these paramters for the TP, TN, FP, FN calculations. 
-                # NOTE! If you are going to use batch_size > 1, comment out all TP, TN, FP, FN code 
+                #print('-------------------------------------------------')
+                #print('SELF-ADDED: PREDICTION SUM: {}'.format(torch.sum(preds)))
+                #print('SELF-ADDED: PREDICTION LIST: {}'.format(preds.tolist()))
+                #print('SELF-ADDED: TRUE LABELS SUM: {}'.format(torch.sum(labels.data)))
+                #print('SELF-ADDED: TRUE LABELS LIST: {}'.format(labels.data.tolist()))
+                #print('SELF-ADDED: EQUAL: {}'.format(torch.sum(preds == labels.data)))
                 
-                y_prediction.append(int(preds))
-                y_true.append(int(labels.data))
+                y_prediction.extend(preds.tolist())
+                y_true.extend(labels.data.tolist())
                 
-                #print('Henning PREDS: {}'.format(torch.sum(preds)))
-                #print('Henning LABELS: {}'.format(torch.sum(labels.data)))
-                #print('Henning EQUAL: {}'.format(torch.sum(preds == labels.data)))
+                #print('SELF-ADDED: y_prediction running: {}'.format(y_prediction))
+                #print('SELF-ADDED: y_true running:       {}'.format(y_true))
                 
                 # Running corrects = TP + TN
                 running_corrects += torch.sum(preds == labels.data)
                 
-                #print('Henning RunningCorrect: {}'.format(running_corrects))
+                #print('SELF-ADDED: RunningCorrect: {}'.format(running_corrects))
                 
                 
             epoch_loss = running_loss / len(dataloaders[phase].dataset)
@@ -104,18 +139,39 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25, is_ince
             
             
             # Add these paramters for the TP, TN, FP, FN calculations.
-            # NOTE! If you are going to use batch_size > 1, comment out all TP, TN, FP, FN code
             # The confusion matrix contains all the TP, TN, FP, FN values in a 2 dimentional array
             # Clears all values before starting new phase or epoch
-            print('Henning PHASE {} '.format(phase))
+            print('SELF-ADDED: PHASE {} '.format(phase))
             cnf_matrix = confusion_matrix(y_true, y_prediction)
+            
             print(cnf_matrix)
+            
+            tp, fp, fn, tn = cnf_matrix.ravel()
+            print('True Positive: {},  False Positive: {},  False Negative: {},  True Negative: {}\n'.format(tp, fp, fn, tn))
+            
             y_true = []
             y_prediction = []
+            
             print()
-            print('Henning ANTALL {} Loss: {:.4f} Acc: {:.4f}'.format(phase, running_loss, running_corrects))
+            print('SELF-ADDED: ANTALL {} Loss: {:.4f} Acc: {:.4f}'.format(phase, running_loss, running_corrects))
             print()
-            print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, epoch_loss, epoch_acc))
+            print('ORIGINAL: PHASE {} Loss: {:.4f} Acc: {:.4f}'.format(phase, epoch_loss, epoch_acc))
+            
+            with open("/home/ubuntu/Desktop/TorchLRP-master/results_output.txt","a") as file:
+            	file.write("\n")
+            	file.write("\n")
+            	file.write("##############################################\n")
+            	file.write("\n")
+            	file.write("\n")
+            	file.write('Epoch {}/{}\n'.format(epoch, num_epochs - 1))
+            	file.write('----------------------------------------------\n')
+            	file.write('SELF-ADDED: PHASE {}\n'.format(phase))
+            	file.write('True Positive: {},  False Positive: {},  False Negative: {},  True Negative: {}\n'.format(tp, fp, fn, tn))
+            	file.write('\n')
+            	file.write('SELF-ADDED: ANTALL {} Loss: {:.4f} Acc: {:.4f}\n'.format(phase, running_loss, running_corrects))
+            	file.write('\n')
+            	file.write('ORIGINAL: PHASE {} Loss: {:.4f} Acc: {:.4f}\n'.format(phase, epoch_loss, epoch_acc))
+            	file.close()
 
 
             # deep copy the model
@@ -132,7 +188,14 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25, is_ince
     print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
     print('Best val Acc: {:4f}'.format(best_acc))
     
-    
+    with open("/home/ubuntu/Desktop/TorchLRP-master/results_output.txt","a") as file:
+    	file.write('\n')
+    	file.write('\n')
+    	file.write('Training complete in {:.0f}m {:.0f}s\n'.format(time_elapsed // 60, time_elapsed % 60))
+    	file.write('Best val Acc: {:4f}\n'.format(best_acc))
+    	file.write('\n')
+    	file.write('----------------------------------------------\n')
+    	file.close()
 
     # load best model weights
     model.load_state_dict(best_model_wts)
@@ -176,11 +239,10 @@ model_name = "vgg"
 num_classes = 2
 
 # Batch size for training (change depending on how much memory you have)
-# Remember to change TP, TN, FP, FN code if this != 1
-batch_size = 1
+batch_size = 128
 
 # Number of epochs to train for
-num_epochs = 4
+num_epochs = 64
 
 # Flag for feature extracting. When False, we finetune the whole model,
 # when True we only update the reshaped layer params
