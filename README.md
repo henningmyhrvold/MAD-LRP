@@ -99,7 +99,7 @@ To the finetune.py file I added the sklearn confusion_matrix. By creating two va
 [1] Bach, S., Binder, A., Montavon, G., Klauschen, F., Müller, K.R. and Samek, W., 2015. On pixel-wise explanations for non-linear classifier decisions by layer-wise relevance propagation. PloS one, 10(7), p.e0130140.  
 [2] Kindermans, P.J., Schütt, K.T., Alber, M., Müller, K.R., Erhan, D., Kim, B. and Dähne, S., 2017. Learning how to explain neural networks: Patternnet and patternattribution. arXiv preprint arXiv:1705.05598.  
 [3] Montavon, G., Binder, A., Lapuschkin, S., Samek, W. and Müller, K.R., 2019. Layer-wise relevance propagation: an overview. In Explainable AI: interpreting, explaining and visualizing deep learning (pp. 193-209). Springer, Cham.  
-[4] Hvilshøj, Frederik, Implementation of LRP for pytorch, Available from: https://github.com/fhvilshoj/TorchLRP, Accessed: 14.04.2022 
-[5] Inkawhich, Nathan, FINETUNING TORCHVISION MODELS, Available from: https://pytorch.org/tutorials/beginner/finetuning\_torchvision\_models\_tutorial.html, Accessed: 14.04.2022
+[4] Hvilshøj, Frederik, Implementation of LRP for pytorch, Available from: https://github.com/fhvilshoj/TorchLRP, Accessed: 14.04.2022 <br />
+[5] Inkawhich, Nathan, FINETUNING TORCHVISION MODELS, Available from: https://pytorch.org/tutorials/beginner/finetuning\_torchvision\_models\_tutorial.html, Accessed: 14.04.2022 <br />
 [6] Myhrvold, Henning, Explainable Visualization for Morphing Attack Detection, Available from: https://github.com/henningmyhrvold/MAD-LRP
 
