@@ -2,7 +2,7 @@
 This repository is based on the code from Frederik Hvilshøj GitHub repository TorchLRP as well as the beginner tutorial from pytorch.org authored by Nathan Inkawhich for fine-tuning torchvision models. I got help from my Biometrics course advisor Haoyu Zhang implementing some of the code. I have added changes in order to calculate True Positive, True Negative, False Positive, False Negative. I have also added the confusion_matrix functionallity from sklearn. This is used to collect metrics during the training and validation phase. The code repository has been worked on after the paper submission, which has made some comments outdated. The code can now process a batch number greater than 1, increasing predictability scores dramatically.    
 
 Available from:
-https://github.com/fhvilshoj/TorchLRP
+https://github.com/fhvilshoj/TorchLRP <br />
 https://pytorch.org/tutorials/beginner/finetuning\_torchvision\_models\_tutorial.html
 
 PyTorch implementation of some of the Layer-Wise Relevance Propagation (LRP)
